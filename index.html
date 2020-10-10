@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title> Circle Paint </title>
+   <link rel="shortcut icon" href="Logo.png" type="x/image">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Cutive&display=swap" rel="stylesheet">
+</head>
+
+<body style="background-image: url(GradientPaint.jpg); background-position: center; background-size: cover;">
+
+<center>
+<h1 style="font-family: 'Cutive', serif; color:white; ">Circle Paint</h1>
+<canvas id="Circanvas" width="800" height="600" style="background-color: white; border-width: 10px; border-style: solid;"></canvas>
+<div>
+<button id="clear" onclick="clearCanvas()">CLEAR CANVAS</button>
+<style>
+    button{
+        padding: 10px;
+        background-color: teal;
+        color: white;
+        cursor: pointer;
+    }
+    label{
+        color: white;
+        font-weight: 700;
+        font-family: 'Cutive', serif;
+    }
+</style>
+</div>
+<div style="margin-right: 30px;"><label>Color : </label><span><input id="colorInput" oninput="checkColor()"></span></div>
+<div style="margin-right: 80px;"><label>Line Width : </label><span><input id="widthInput" oninput="checkWidth()"></span></div>
+<div style="margin-right: 40px;"><label>Radius : </label><span><input id="radInput" oninput="checkRadius()"></span></div>
+</center>
+<script>
+    var canvas = document.getElementById("Circanvas");
+    var ctx = canvas.getContext("2d");
+    var color = "black";
+    var lineW = 3;
+    var EventName = "";
+    var LastXposition = 0;
+    var LastYposition = 0;
+    var UserRadius = 30;
+    var screenWidth = screen.width;
+    var new_width = screenWidth - 100;
+    var new_height = screen.height - 300;
+
+    if (screenWidth < 992){
+    canvas.width = new_width;
+    canvas.height = new_height;
+
+    document.body.style.overflow = "hidden";
+}
+
+canvas.addEventListener("touchstart", UserTouchstart);
+
+function UserTouchstart(e){
+    LastXposition = e.touches[0].clientX - canvas.offsetLeft;
+    LastYposition = e.touches[0].clientY - canvas.offsetTop;
+}
+
+canvas.addEventListener("touchmove", UserTouchmove);
+
+function UserTouchmove(e){
+    CurrentXposition = e.touches[0].clientX - canvas.offsetLeft;
+    CurrentYposition = e.touches[0].clientY - canvas.offsetTop;
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineW;
+    ctx.moveTo(LastXposition, LastYposition);
+    ctx.arc(CurrentXposition, CurrentYposition, UserRadius, 0, 2*Math.PI);
+    ctx.stroke();
+
+    LastXposition = CurrentXposition;
+    LastYposition = CurrentYposition;
+}
+
+    canvas.addEventListener("mousedown", UserMousedown);
+
+    function UserMousedown(e){
+        EventName = "mousedown";
+    }
+
+    canvas.addEventListener("mouseup", UserMouseup);
+    
+    function UserMouseup(e){
+        EventName = "mouseup";
+    }
+
+    canvas.addEventListener("mouseleave", UserMouseleave);
+
+    function UserMouseleave(e){
+        EventName = "mouseleave";
+    }
+
+     function checkColor(){
+         color = document.getElementById("colorInput").value;
+     }
+
+     function checkWidth(){
+         lineW = document.getElementById("widthInput").value;
+     }
+
+     function checkRadius(){
+         UserRadius = document.getElementById("radInput").value;
+     }
+
+    canvas.addEventListener("mousemove", UserMousemove);
+
+    function UserMousemove(e){
+      CurrentXposition = e.clientX - canvas.offsetLeft;
+      CurrentYposition = e.clientY - canvas.offsetTop;
+     if (EventName == "mousedown"){
+         ctx.beginPath();
+         ctx.strokeStyle = color;
+         ctx.lineWidth = lineW;
+         ctx.arc(LastXposition, LastYposition, UserRadius, 0, 2*Math.PI);
+         ctx.stroke();
+     }
+         LastXposition = CurrentXposition;
+         LastYposition = CurrentYposition;
+    }
+
+    function clearCanvas(){
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
+    
+</script>
+</body>
+</html>
